@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A few ideas for swsh</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #0B0710;
+    --surface: #14101C;
+    --surface-2: #1B1526;
+    --line: #2B2338;
+    --text: #F1EDF7;
+    --text-muted: #948CA6;
+    --violet: #B183F0;
+    --magenta: #E8558F;
+    --amber: #F0B94A;
+    --cyan: #5FCBD8;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 780px; margin: 0 auto; padding: 72px 24px 120px; }
+
+  h1, h2{ font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.01em; }
+
+  .tag{
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--text-muted); padding-bottom: 26px;
+  }
+  .tag .dot{
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--violet); box-shadow: 0 0 0 3px rgba(177,131,240,0.18);
+  }
+
+  h1{ font-size: 40px; font-weight: 600; line-height: 1.18; max-width: 15ch; margin-bottom: 18px; }
+  .lede{ font-size: 16.5px; color: var(--text-muted); max-width: 50ch; margin-bottom: 52px; }
+  .lede b{ color: var(--text); font-weight: 500; }
+
+  .section{ margin-bottom: 64px; }
+  .section-num{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px; color: var(--violet); margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+  .section-title{ font-size: 22px; font-weight: 600; margin-bottom: 10px; }
+  .section-sub{ font-size: 14.5px; color: var(--text-muted); max-width: 52ch; margin-bottom: 22px; }
+
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 24px;
+  }
+
+  /* ---------- Panel 1: consent toggle ---------- */
+  .flow{
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .flow-step{
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    text-align: center;
+  }
+  .flow-arrow{ color: var(--text-muted); font-size: 15px; }
+  .flow-end{
+    border-radius: 8px; padding: 10px 14px; font-size: 13.5px;
+    font-weight: 600; transition: all 0.25s ease;
+  }
+  .flow-end.safe{ background: rgba(95,203,216,0.12); border: 1px solid var(--cyan); color: var(--cyan); }
+  .flow-end.risky{ background: rgba(232,85,143,0.12); border: 1px solid var(--magenta); color: var(--magenta); }
+
+  .consent-toggle{
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 18px;
+  }
+  .consent-label{ font-size: 13.5px; }
+  .consent-label .muted{ color: var(--text-muted); display:block; font-size:12.5px; margin-top:2px; }
+  .switch{
+    position: relative; width: 46px; height: 26px; border-radius: 999px;
+    background: var(--cyan); border: none; cursor: pointer; flex-shrink: 0;
+    transition: background 0.25s ease;
+  }
+  .switch.off{ background: var(--magenta); }
+  .switch::after{
+    content: ""; position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; border-radius: 50%; background: #0B0710;
+    transition: left 0.25s ease;
+  }
+  .switch.off::after{ left: 23px; }
+
+  .note{ font-size: 13px; color: var(--text-muted); }
+  .note b{ color: var(--text); }
+
+  /* ---------- Panel 2: sponsor tagging demo ---------- */
+  .crowd-scene{
+    position: relative;
+    height: 220px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #251A38 0%, #1A1428 60%, #120C1C 100%);
+    overflow: hidden;
+    margin-bottom: 18px;
+    border: 1px solid var(--line);
+  }
+  .crowd-dot{
+    position: absolute; width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(241,237,247,0.15);
+  }
+  .scan-line{
+    position: absolute; top: 0; left: -10%;
+    width: 6px; height: 100%;
+    background: linear-gradient(180deg, transparent, var(--violet), transparent);
+    opacity: 0; filter: blur(1px);
+  }
+  .scan-line.run{
+    animation: scan 1.1s ease-in-out;
+  }
+  @keyframes scan{
+    0%{ left: -5%; opacity: 0; }
+    10%{ opacity: 1; }
+    90%{ opacity: 1; }
+    100%{ left: 105%; opacity: 0; }
+  }
+  .pill{
+    position: absolute;
+    font-size: 11.5px; font-weight: 600;
+    padding: 3px 9px; border-radius: 999px;
+    background: rgba(11,7,16,0.85);
+    border: 1px solid var(--amber); color: var(--amber);
+    opacity: 0; transform: translateY(4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+  .pill.show{ opacity: 1; transform: translateY(0); }
+
+  .scan-btn{
+    background: var(--violet); color: #0B0710; border: none;
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13.5px;
+    padding: 9px 18px; border-radius: 8px; cursor: pointer;
+  }
+  .scan-btn:disabled{ opacity: 0.5; cursor: default; }
+
+  /* ---------- Panel 3: viral spike chart ---------- */
+  .chart-wrap{ margin-bottom: 8px; }
+  svg{ display: block; width: 100%; height: auto; }
+  .spike-point{ cursor: pointer; }
+  .insight-box{
+    background: var(--surface-2); border-left: 2px solid var(--amber);
+    border-radius: 6px; padding: 12px 14px; font-size: 13.5px;
+    color: var(--text-muted); margin-top: 14px; display: none;
+  }
+  .insight-box.show{ display: block; }
+  .insight-box b{ color: var(--amber); }
+
+  /* ---------- Contribution list ---------- */
+  .contrib{
+    border-top: 1px solid var(--line);
+    padding-top: 16px; margin-top: 6px;
+  }
+  .contrib-row{ display: flex; gap: 12px; padding: 10px 0; }
+  .contrib-row:not(:last-child){ border-bottom: 1px solid var(--line); }
+  .contrib-tag{
+    font-size: 11.5px; font-weight: 600; color: var(--violet);
+    flex-shrink: 0; width: 90px; padding-top: 2px;
+  }
+  .contrib-text{ font-size: 14px; color: var(--text-muted); }
+  .contrib-text b{ color: var(--text); font-weight: 500; }
+
+  .close-line{ font-size: 16.5px; max-width: 48ch; color: var(--text-muted); margin-bottom: 10px; }
+  .close-line b{ color: var(--text); font-weight: 500; }
+
+  .footer{
+    margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line);
+    font-size: 12.5px; color: var(--text-muted);
+  }
+
+  @media (max-width: 600px){
+    .wrap{ padding: 48px 18px 80px; }
+    h1{ font-size: 30px; }
+    .contrib-row{ flex-direction: column; gap: 4px; }
+    .contrib-tag{ width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="tag"><span class="dot"></span>A few concept sketches for swsh — not built on your data or codebase</div>
+
+  <h1>Three sketches, for the founding team.</h1>
+  <p class="lede">Congrats on the seed. Three small, concrete problems I'd want to help solve.</p>
+
+  <!-- Panel 1 -->
+  <div class="section">
+    <div class="section-num">01 — THE LEGAL ONE</div>
+    <div class="section-title">Photo discovery, without the biometric liability</div>
+    <p class="section-sub">Match-then-discard instead of storing embeddings — same feature, no biometric database.</p>
+
+    <div class="card">
+      <div class="consent-toggle">
+        <div class="consent-label">Store face embeddings after matching<span class="muted">Toggle to see the two architectures</span></div>
+        <button class="switch off" id="consentSwitch" onclick="toggleConsent()"></button>
+      </div>
+
+      <div class="flow" id="flowRow">
+        <div class="flow-step">Fan selfie</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Embedding generated</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Matched to album</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-end safe" id="flowEnd">Embedding discarded — nothing biometric retained</div>
+      </div>
+
+      <div class="note" id="consentNote"><b>Safer default:</b> nothing biometric ever gets retained.</div>
+    </div>
+  </div>
+
+  <!-- Panel 2 -->
+  <div class="section">
+    <div class="section-num">02 — THE SPONSOR ONE</div>
+    <div class="section-title">Auto-tagging sponsor logos and merch, live</div>
+    <p class="section-sub">A rough sketch of the detection layer surfacing in real time.</p>
+
+    <div class="card">
+      <div class="crowd-scene" id="crowdScene">
+        <div class="scan-line" id="scanLine"></div>
+        <div class="crowd-dot" style="top:30%; left:12%;"></div>
+        <div class="crowd-dot" style="top:55%; left:22%;"></div>
+        <div class="crowd-dot" style="top:20%; left:38%;"></div>
+        <div class="crowd-dot" style="top:60%; left:48%;"></div>
+        <div class="crowd-dot" style="top:35%; left:60%;"></div>
+        <div class="crowd-dot" style="top:65%; left:72%;"></div>
+        <div class="crowd-dot" style="top:25%; left:83%;"></div>
+
+        <div class="pill" id="pill1" style="top:24%; left:34%;">Red Bull logo</div>
+        <div class="pill" id="pill2" style="top:58%; left:44%;">Tour merch tee</div>
+        <div class="pill" id="pill3" style="top:20%; left:78%;">VIP wristband</div>
+      </div>
+      <button class="scan-btn" id="scanBtn" onclick="runScan()">Run detection on this crowd shot</button>
+    </div>
+  </div>
+
+  <!-- Panel 3 -->
+  <div class="section">
+    <div class="section-num">03 — THE VIRAL ONE</div>
+    <div class="section-title">Spotting the spike while the show is still happening</div>
+    <p class="section-sub">Catching it live vs. the next morning. Click the highlighted point.</p>
+
+    <div class="card">
+      <div class="chart-wrap">
+        <svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="0,140 60,132 120,128 180,120 240,110 300,40 360,60 420,75 480,68 540,72 600,66"
+            fill="none" stroke="#5FCBD8" stroke-width="2.5"/>
+          <circle class="spike-point" cx="300" cy="40" r="7" fill="#0B0710" stroke="#F0B94A" stroke-width="2.5" onclick="showInsight()"/>
+        </svg>
+      </div>
+      <div class="note">Uploads/min across the set.</div>
+      <div class="insight-box" id="insightBox">
+        <b>9:42 PM — surprise guest walk-on.</b> 6x spike in 90 seconds. Caught live, it's a clip you can push out. Caught tomorrow, it's just a data point.
+      </div>
+    </div>
+  </div>
+
+  <!-- Contribution -->
+  <div class="section">
+    <div class="section-num">HOW I'D HELP</div>
+    <div class="card contrib">
+      <div class="contrib-row">
+        <div class="contrib-tag">BUILD</div>
+        <div class="contrib-text">AI/backend — Python, RAG, production ML. This kind of pipeline work is what I want to be doing daily.</div>
+      </div>
+      <div class="contrib-row">
+        <div class="contrib-tag">DE-RISK</div>
+        <div class="contrib-text">Privacy-by-design as a default, not an afterthought.</div>
+      </div>
+      <div class="contrib-row">
+        <div class="contrib-tag">LEARN</div>
+        <div class="contrib-text">New to live-events/sponsorship data — ready to learn it fast.</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="close-line">Sketches, not a claim I've solved this — an honest offer to build the real versions with your team.</p>
+
+  <div class="footer">All figures and visuals above are illustrative concept sketches, not swsh product screens or real data.</div>
+
+</div>
+
+<script>
+  let embeddingStored = false;
+  function toggleConsent(){
+    embeddingStored = !embeddingStored;
+    const btn = document.getElementById('consentSwitch');
+    const end = document.getElementById('flowEnd');
+    const note = document.getElementById('consentNote');
+
+    btn.classList.toggle('off', !embeddingStored);
+
+    if(embeddingStored){
+      end.classList.remove('safe'); end.classList.add('risky');
+      end.textContent = 'Embedding stored — now a biometric record';
+      note.innerHTML = '<b>Higher risk:</b> stored embeddings fall under state biometric privacy laws.';
+    } else {
+      end.classList.remove('risky'); end.classList.add('safe');
+      end.textContent = 'Embedding discarded — nothing biometric retained';
+      note.innerHTML = '<b>Safer default:</b> nothing biometric ever gets retained.';
+    }
+  }
+
+  function runScan(){
+    const scanLine = document.getElementById('scanLine');
+    const btn = document.getElementById('scanBtn');
+    btn.disabled = true;
+    scanLine.classList.remove('run');
+    void scanLine.offsetWidth;
+    scanLine.classList.add('run');
+
+    setTimeout(() => {
+      document.getElementById('pill1').classList.add('show');
+    }, 350);
+    setTimeout(() => {
+      document.getElementById('pill2').classList.add('show');
+    }, 600);
+    setTimeout(() => {
+      document.getElementById('pill3').classList.add('show');
+      btn.disabled = false;
+    }, 850);
+  }
+
+  function showInsight(){
+    document.getElementById('insightBox').classList.add('show');
+  }
+</script>
+
+</body>
+</html>
